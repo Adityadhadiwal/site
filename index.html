@@ -1,109 +1,502 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>ZEUSS Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Fit Genie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0a0a;--ink2:#111;--ink3:#161616;
+  --surface:#0f0f0f;--card:#161616;--card2:#1e1e1e;--card3:#242424;
+  --amber:#F5A623;--amber2:#FFB74D;--amber-dim:rgba(245,166,35,.1);--amber-border:rgba(245,166,35,.22);
+  --muted:#555;--muted2:#777;--muted3:#999;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);--border3:rgba(255,255,255,.18);
+  --success:#22c27a;--success-bg:rgba(34,194,122,.1);--success-border:rgba(34,194,122,.28);
+  --blue:#378ADD;--blue-bg:rgba(55,138,221,.12);--blue-border:rgba(55,138,221,.28);
+  --r:12px;--r2:16px;--r3:20px;
+  font-family:'Space Grotesk',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--surface);color:#e0e0e0;min-height:100vh;overflow-x:hidden}
+
+/* ─── SCREEN MANAGER ─── */
+.screen{display:none}
+.screen.active{display:flex;flex-direction:column}
+#s-land.active{align-items:center;justify-content:center;min-height:100vh;padding:2.5rem 1.5rem 3rem;text-align:center}
+#s-hype.active{align-items:center;justify-content:center;min-height:100vh;padding:2rem 1.5rem;text-align:center}
+#s-plan.active{display:block;min-height:100vh}
+
+/* ─── LANDING ─── */
+.logo-wrap{position:relative;margin:0 auto 2rem}
+.logo-mark{width:60px;height:60px;border-radius:16px;background:var(--amber);display:flex;align-items:center;justify-content:center;margin:0 auto}
+.logo-mark i{font-size:30px;color:#0a0a0a}
+.logo-glow{position:absolute;inset:-10px;border-radius:26px;background:var(--amber);filter:blur(24px);opacity:.18;z-index:-1;animation:pulse-glow 3s ease-in-out infinite}
+@keyframes pulse-glow{0%,100%{opacity:.14}50%{opacity:.26}}
+
+.land-eyebrow{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted2);margin-bottom:.9rem;font-family:'Inter',sans-serif}
+
+.land-h{font-size:clamp(30px,6vw,42px);font-weight:700;line-height:1.08;margin-bottom:.45rem;letter-spacing:-.8px;color:#f0f0f0}
+.land-h .static{display:block}
+.land-h .kinetic-wrap{display:block;color:var(--amber);position:relative;min-height:1.15em}
+.kinetic{display:inline-block;transition:opacity .22s,transform .22s}
+.kinetic.out{opacity:0;transform:translateY(6px)}
+.kinetic.in{opacity:1;transform:translateY(0)}
+
+.land-sub{font-size:15px;color:var(--muted3);margin-bottom:.6rem;line-height:1.65;max-width:360px;font-family:'Inter',sans-serif}
+.land-quote{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:2.75rem;max-width:310px;font-family:'Inter',sans-serif}
+
+.who-rule{width:100%;max-width:460px;display:flex;align-items:center;gap:12px;margin-bottom:1.4rem}
+.who-rule::before,.who-rule::after{content:'';flex:1;height:1px;background:var(--border2)}
+.who-rule-label{font-size:10px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);white-space:nowrap;font-family:'Inter',sans-serif}
+
+.c-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:1.5rem;max-width:480px}
+.cbtn{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;background:var(--card);border:1px solid var(--border2);border-radius:var(--r2);padding:.95rem .7rem;width:88px;transition:border-color .2s,transform .18s,background .2s,box-shadow .2s;position:relative;overflow:hidden}
+.cbtn::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s}
+.cbtn:hover{border-color:var(--amber);background:var(--card2);transform:translateY(-5px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.cbtn:active{transform:scale(.95);transition:transform .08s}
+.c-av{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;border:2px solid transparent;transition:border-color .2s}
+.cbtn:hover .c-av{border-color:currentColor}
+.c-nm{font-size:13px;font-weight:600;color:#d8d8d8}
+.c-goal{font-size:10px;color:var(--muted2);font-family:'Inter',sans-serif}
+.land-note{font-size:11px;color:var(--muted);font-family:'Inter',sans-serif;display:flex;align-items:center;gap:5px}
+.land-note i{font-size:13px}
+
+/* ─── HYPE ─── */
+.hype-av-ring{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.4rem;position:relative;border:2.5px solid var(--amber);padding:5px;transition:border-color .3s}
+.hype-av-ring::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px dashed rgba(245,166,35,.25);animation:spin-slow 18s linear infinite}
+@keyframes spin-slow{to{transform:rotate(360deg)}}
+.hype-av-inner{width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700}
+.hype-greet{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:.3rem;font-family:'Inter',sans-serif}
+.hype-name{font-size:36px;font-weight:700;color:#f2f2f2;letter-spacing:-.7px;margin-bottom:.75rem}
+.streak-pill{display:inline-flex;align-items:center;gap:6px;background:var(--amber-dim);border:1px solid var(--amber-border);border-radius:20px;padding:.35rem 1rem;font-size:13px;font-weight:600;color:var(--amber);margin-bottom:1.6rem;font-family:'Inter',sans-serif}
+.streak-pill i{font-size:16px}
+.hype-line{font-size:15px;color:#a0a0a0;max-width:370px;line-height:1.72;margin-bottom:.75rem;font-family:'Inter',sans-serif}
+.hype-qt{font-size:13px;color:var(--muted2);font-style:italic;max-width:330px;line-height:1.65;margin-bottom:2.25rem;font-family:'Inter',sans-serif}
+.hstats{display:flex;gap:10px;margin-bottom:2rem;justify-content:center}
+.hs{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:.75rem 1.15rem;text-align:center;min-width:84px;transition:border-color .2s}
+.hs:hover{border-color:var(--border3)}
+.hs-v{font-size:22px;font-weight:700}
+.hs-l{font-size:10px;color:var(--muted2);margin-top:3px;font-family:'Inter',sans-serif}
+.hcta{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--amber);color:#0a0a0a;border:none;border-radius:var(--r);padding:.9rem 2.25rem;font-size:15px;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:opacity .15s,transform .12s,box-shadow .2s;width:100%;max-width:290px;box-shadow:0 0 0 rgba(245,166,35,0);letter-spacing:-.1px}
+.hcta:hover{opacity:.93;box-shadow:0 0 28px rgba(245,166,35,.28)}
+.hcta:active{transform:scale(.97)}
+.hback{margin-top:1rem;font-size:12px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;transition:color .15s;display:flex;align-items:center;gap:4px;margin-left:auto;margin-right:auto}
+.hback:hover{color:var(--muted3)}
+
+/* ─── PLAN SCREEN ─── */
+.ptop{display:flex;align-items:center;gap:10px;padding:.9rem 1.1rem;border-bottom:1px solid var(--border);background:var(--ink2);position:sticky;top:0;z-index:20}
+.pback-btn{width:34px;height:34px;border:1px solid var(--border2);border-radius:var(--r);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card);flex-shrink:0;transition:background .15s,border-color .15s}
+.pback-btn:hover{background:var(--card2);border-color:var(--border3)}
+.pback-btn i{font-size:17px;color:var(--muted3)}
+.ptop-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.ptop-info{flex:1}
+.ptop-name{font-size:14px;font-weight:700;color:#eee}
+.ptop-sub{font-size:11px;color:var(--muted2);font-family:'Inter',sans-serif}
+.day-chip{font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-border);font-family:'Inter',sans-serif;white-space:nowrap}
+
+/* hero */
+.phero{padding:1.25rem 1.1rem 1rem;background:var(--ink2);border-bottom:1px solid var(--border)}
+.phero-top{display:flex;align-items:center;gap:14px;margin-bottom:1rem}
+.prog-ring-wrap{flex-shrink:0;width:64px;height:64px;position:relative}
+.prog-ring-wrap svg{transform:rotate(-90deg);width:64px;height:64px}
+.prog-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--amber)}
+.phero-right{flex:1;min-width:0}
+.phero-lbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:.2rem;font-family:'Inter',sans-serif}
+.phero-focus{font-size:20px;font-weight:700;color:#f0f0f0;letter-spacing:-.3px;margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phero-meta{font-size:12px;color:var(--muted2);font-family:'Inter',sans-serif}
+.prog-labels{display:flex;justify-content:space-between;font-size:11px;font-family:'Inter',sans-serif}
+.prog-labels .pl{color:var(--muted2)}
+.prog-labels .pr{color:var(--amber);font-weight:600;transition:color .3s}
+.prog-labels .pr.done{color:var(--success)}
+
+/* body */
+.pbody{padding:.85rem 1.1rem;display:flex;flex-direction:column;gap:1rem}
+
+.sec-head{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:.55rem;display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif}
+.sec-head i{font-size:14px}
+
+/* stats */
+.sum-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.scard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.8rem .5rem;text-align:center;transition:border-color .2s}
+.scard:hover{border-color:var(--border2)}
+.scard-v{font-size:22px;font-weight:700}
+.scard-l{font-size:10px;color:var(--muted2);font-family:'Inter',sans-serif;margin-top:2px}
+
+/* tasks */
+.task-list{display:flex;flex-direction:column;gap:7px}
+.titem{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.8rem .95rem;cursor:pointer;transition:border-color .2s,background .2s,transform .12s;user-select:none}
+.titem:hover{border-color:var(--border2);background:var(--card2)}
+.titem:active{transform:scale(.99)}
+.titem.done{background:var(--success-bg);border-color:var(--success-border)}
+.titem.done .tname{color:var(--success);text-decoration:line-through;text-decoration-color:rgba(34,194,122,.4)}
+.tchk{width:23px;height:23px;border-radius:50%;border:1.5px solid var(--border3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;background:transparent}
+.titem.done .tchk{background:var(--success);border-color:var(--success)}
+.titem.done .tchk i{color:#0f0f0f;opacity:1}
+.tchk i{font-size:12px;opacity:0;transition:opacity .2s}
+.tinfo{flex:1;min-width:0}
+.tname{font-size:13px;font-weight:600;color:#d8d8d8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
+.tmeta{font-size:11px;color:var(--muted2);margin-top:2px;font-family:'Inter',sans-serif}
+.tbadge{font-size:10px;padding:3px 8px;border-radius:20px;border:1px solid var(--border2);color:var(--muted2);background:var(--card2);flex-shrink:0;font-family:'Inter',sans-serif;white-space:nowrap}
+
+/* meals */
+.meal-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.mitem{display:flex;align-items:flex-start;gap:10px;padding:.7rem .95rem;border-bottom:1px solid var(--border)}
+.mitem:last-child{border-bottom:none}
+.mtime{font-size:11px;color:var(--muted2);min-width:58px;padding-top:2px;font-family:'Inter',sans-serif;font-weight:500}
+.mdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.mtxt{flex:1;min-width:0}
+.mdesc{font-size:13px;font-weight:600;color:#ccc}
+.mdet{font-size:11px;color:var(--muted2);margin-top:1px;line-height:1.45;font-family:'Inter',sans-serif}
+.mcal{font-size:11px;color:var(--muted2);white-space:nowrap;padding-top:2px;font-family:'Inter',sans-serif;font-weight:600}
+
+/* macro bar */
+.macro-bar-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.85rem .95rem;display:flex;flex-direction:column;gap:.65rem}
+.macro-row{display:flex;align-items:center;gap:10px}
+.macro-lbl{font-size:11px;font-weight:600;color:var(--muted3);min-width:54px;font-family:'Inter',sans-serif}
+.macro-track{flex:1;height:6px;background:var(--card2);border-radius:3px;overflow:hidden}
+.macro-fill{height:6px;border-radius:3px;transition:width .8s ease}
+.macro-val{font-size:11px;font-weight:600;min-width:36px;text-align:right;font-family:'Inter',sans-serif}
+
+/* water */
+.water-row{display:flex;gap:6px;flex-wrap:wrap}
+.wcup{width:36px;height:36px;border-radius:var(--r);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card);transition:all .18s}
+.wcup i{font-size:18px;color:var(--muted);transition:color .18s}
+.wcup.fill{background:var(--blue-bg);border-color:var(--blue-border)}
+.wcup.fill i{color:var(--blue)}
+.wcup:hover{border-color:var(--border3);transform:scale(1.08)}
+.wlbl{font-size:11px;color:var(--muted2);margin-top:.5rem;font-family:'Inter',sans-serif}
+
+/* tips */
+.tips-list{display:flex;flex-direction:column;gap:6px}
+.tip-item{display:flex;align-items:flex-start;gap:11px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.75rem .95rem;transition:border-color .2s}
+.tip-item:hover{border-color:var(--border2)}
+.tip-num{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--amber-border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--amber);flex-shrink:0;font-family:'Inter',sans-serif;margin-top:1px}
+.tip-txt{font-size:12px;color:var(--muted3);line-height:1.6;font-family:'Inter',sans-serif}
+
+/* done banner */
+.done-banner{background:var(--success-bg);border:1px solid var(--success-border);border-radius:var(--r);padding:.9rem 1rem;display:flex;align-items:center;gap:12px;animation:fadein .4s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.done-banner i{font-size:26px;color:var(--success);flex-shrink:0}
+.done-b-title{font-size:14px;font-weight:700;color:var(--success)}
+.done-b-sub{font-size:12px;color:rgba(34,194,122,.65);font-family:'Inter',sans-serif;margin-top:1px}
+</style>
 </head>
+<body>
 
-<body class="bg-black text-white font-sans">
-
-  <!-- HEADER -->
-  <div class="flex justify-between items-center p-5 border-b border-neutral-800">
-    <h1 class="text-xl font-bold tracking-wide">ZEUSS</h1>
-    <span id="userName" class="text-gray-400 text-sm"></span>
+<!-- ──────────── LANDING ──────────── -->
+<section id="s-land" class="screen active" role="main">
+  <div class="logo-wrap">
+    <div class="logo-mark"><i class="ti ti-bolt" aria-hidden="true"></i></div>
+    <div class="logo-glow"></div>
   </div>
+  <div class="land-eyebrow">Your personal fitness coach</div>
+  <h1 class="land-h">
+    <span class="static">Today you</span>
+    <span class="kinetic-wrap"><span class="kinetic in" id="kinetic">get stronger</span></span>
+  </h1>
+  <p class="land-sub">One plan. One day. Everything you need to show up and win.</p>
+  <p class="land-quote">"The body achieves what the mind believes."</p>
+  <div class="who-rule"><div class="who-rule-label">Who are you today?</div></div>
+  <div class="c-grid" id="cGrid" role="list"></div>
+  <p class="land-note"><i class="ti ti-hand-finger" aria-hidden="true"></i>Tap your name to unlock today's plan</p>
+</section>
 
-  <!-- MAIN -->
-  <div class="max-w-3xl mx-auto p-6">
+<!-- ──────────── HYPE ──────────── -->
+<section id="s-hype" class="screen" aria-live="polite">
+  <div class="hype-av-ring" id="hRing">
+    <div class="hype-av-inner" id="hAv"></div>
+  </div>
+  <div class="hype-greet">Back and ready</div>
+  <h2 class="hype-name" id="hName"></h2>
+  <div class="streak-pill" id="hStreak"><i class="ti ti-flame" aria-hidden="true"></i><span id="hStreakTxt"></span></div>
+  <p class="hype-line" id="hLine"></p>
+  <p class="hype-qt" id="hQt"></p>
+  <div class="hstats" id="hStats" role="list"></div>
+  <button class="hcta" id="hCta" aria-label="See today's plan">
+    <i class="ti ti-arrow-right" aria-hidden="true"></i>Unlock today's plan
+  </button>
+  <button class="hback" id="hBack" aria-label="Go back and select a different person">
+    <i class="ti ti-arrow-left" style="font-size:11px" aria-hidden="true"></i>Not you?
+  </button>
+</section>
 
-    <!-- TITLE -->
-    <h2 class="text-3xl font-bold mb-2">Today's Plan</h2>
-    <p class="text-gray-400 mb-6">Execute. Don’t negotiate.</p>
-
-    <!-- PLAN CARD -->
-    <div class="bg-neutral-900 p-6 rounded-2xl shadow-lg">
-
-      <div class="mb-4">
-        <p class="text-gray-400 text-sm">Workout</p>
-        <p id="workout" class="text-lg font-semibold"></p>
-      </div>
-
-      <div class="mb-4">
-        <p class="text-gray-400 text-sm">Diet</p>
-        <p id="diet" class="text-lg font-semibold"></p>
-      </div>
-
-      <div class="mb-6">
-        <p class="text-gray-400 text-sm">Tasks</p>
-        <p id="tasks" class="text-lg font-semibold"></p>
-      </div>
-
-      <!-- ACTION BUTTONS -->
-      <div class="flex gap-3">
-        <button onclick="markDone()" class="flex-1 bg-green-600 py-3 rounded-xl font-semibold hover:opacity-90">
-          Done
-        </button>
-        <button onclick="markSkip()" class="flex-1 bg-red-600 py-3 rounded-xl font-semibold hover:opacity-90">
-          Skip
-        </button>
-      </div>
-
+<!-- ──────────── PLAN ──────────── -->
+<section id="s-plan" class="screen">
+  <div class="ptop">
+    <div class="pback-btn" id="pBack" role="button" aria-label="Back to hype screen" tabindex="0">
+      <i class="ti ti-arrow-left" aria-hidden="true"></i>
     </div>
-
-    <!-- STATUS -->
-    <div id="statusBox" class="mt-6 hidden bg-neutral-900 p-4 rounded-xl text-center"></div>
-
+    <div class="ptop-av" id="pAv" aria-hidden="true"></div>
+    <div class="ptop-info">
+      <div class="ptop-name" id="pName"></div>
+      <div class="ptop-sub" id="pSub"></div>
+    </div>
+    <div class="day-chip" id="pDay"></div>
   </div>
+
+  <div class="phero">
+    <div class="phero-top">
+      <div class="prog-ring-wrap">
+        <svg viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="4"/>
+          <circle id="progCircle" cx="32" cy="32" r="26" fill="none" stroke="#F5A623"
+            stroke-width="4" stroke-linecap="round"
+            stroke-dasharray="163.4" stroke-dashoffset="163.4"
+            style="transition:stroke-dashoffset .7s ease"/>
+        </svg>
+        <div class="prog-pct" id="pPct">0%</div>
+      </div>
+      <div class="phero-right">
+        <div class="phero-lbl">Today's focus</div>
+        <div class="phero-focus" id="pFocus"></div>
+        <div class="phero-meta" id="pMeta"></div>
+      </div>
+    </div>
+    <div class="prog-labels">
+      <span class="pl" id="pProgL">0 of 0 tasks done</span>
+      <span class="pr" id="pProgR">Keep going</span>
+    </div>
+  </div>
+
+  <div class="pbody" id="pBody"></div>
+</section>
 
 <script>
+/* ── DATA ── */
+const DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const TODAY=DAYS[new Date().getDay()];
 
-// 🔥 USER DATA (EDIT THIS ONLY)
-const plans = {
-  aditya: {
-    name: "Aditya",
-    workout: "Push workout (Chest + Triceps)",
-    diet: "Normal + high protein focus",
-    tasks: "5k steps, 3L water"
-  },
-  rahul: {
-    name: "Rahul",
-    workout: "Cardio + Core",
-    diet: "Low carb",
-    tasks: "8k steps, no sugar"
+const clients=[
+  {id:"adii",name:"Adii",initials:"AD",color:"#F5A623",bg:"rgba(245,166,35,.12)",tc:"#F5A623",goal:"Fat loss",streak:5,
+   hype:{line:"You've been crushing it all week. Today is push day — chest and triceps. Time to show the bench who's boss.",qt:"Every rep is a brick in the wall of the person you're becoming. Don't stop halfway."},
+   today:{focus:"Chest & triceps",meta:"5 exercises · ~55 min · heavy",cals:2200,water:8,
+    macros:{p:{g:185,pct:88,c:"#F5A623"},c:{g:220,pct:70,c:"#FB923C"},f:{g:65,pct:55,c:"#E05C8A"}},
+    wo:[{n:"Bench press",m:"4 × 10 reps · 70 kg",b:"Compound"},{n:"Incline dumbbell press",m:"3 × 12 reps · 24 kg",b:"Chest"},{n:"Cable fly",m:"3 × 15 reps · 15 kg",b:"Isolation"},{n:"Tricep pushdown",m:"3 × 15 reps · cable",b:"Tricep"},{n:"Diamond push-ups to failure",m:"3 sets · no rest after",b:"Finisher"}],
+    meals:[{t:"7:00 AM",dot:"#F5A623",d:"Pre-workout oats",det:"80g oats + 1 banana + 4 egg whites scrambled",c:"420 kcal"},{t:"10:30 AM",dot:"#22c27a",d:"Mid-morning snack",det:"Greek yogurt 200g + 10 almonds",c:"250 kcal"},{t:"1:00 PM",dot:"#F5A623",d:"Lunch",det:"Grilled chicken 200g + brown rice 150g + cucumber salad",c:"580 kcal"},{t:"4:00 PM",dot:"#22c27a",d:"Post-workout shake",det:"Whey protein 30g + 1 apple",c:"280 kcal"},{t:"7:30 PM",dot:"#F5A623",d:"Dinner",det:"Baked salmon 180g + sweet potato + steamed broccoli",c:"520 kcal"},{t:"9:30 PM",dot:"#555",d:"Night protein",det:"Casein shake 25g + 5 walnuts",c:"150 kcal"}],
+    tips:["Warm up 5 min light cardio before touching the bench","Rest 90 sec between compound sets, 60 sec isolation","Log your weights — beat last session by at least 1 rep","Sleep before midnight — muscle rebuilds while you rest"]}},
+  {id:"riya",name:"Riya",initials:"RI",color:"#E05C8A",bg:"rgba(224,92,138,.12)",tc:"#E05C8A",goal:"Toning",streak:7,
+   hype:{line:"Seven days in a row — that's pure discipline. Lower body today. Strong legs carry a strong life.",qt:"You don't have to be extreme, just consistent. Show up and the results will follow."},
+   today:{focus:"Lower body strength",meta:"5 exercises · ~50 min · moderate",cals:1720,water:7,
+    macros:{p:{g:120,pct:65,c:"#E05C8A"},c:{g:200,pct:68,c:"#FB923C"},f:{g:55,pct:50,c:"#F5A623"}},
+    wo:[{n:"Barbell squat",m:"4 × 12 reps · 35 kg",b:"Compound"},{n:"Dumbbell lunges",m:"3 × 12 each leg · 10 kg",b:"Legs"},{n:"Glute bridge",m:"3 × 15 reps · bodyweight",b:"Glutes"},{n:"Leg curl machine",m:"3 × 12 reps · 25 kg",b:"Hamstrings"},{n:"Plank hold",m:"3 × 45 seconds",b:"Core"}],
+    meals:[{t:"7:30 AM",dot:"#E05C8A",d:"Breakfast",det:"3 idli + sambar + coconut chutney",c:"350 kcal"},{t:"10:30 AM",dot:"#22c27a",d:"Morning snack",det:"Seasonal fruit bowl + low-fat yogurt 150g",c:"180 kcal"},{t:"1:00 PM",dot:"#E05C8A",d:"Lunch",det:"1 cup dal + 1 roti + sabzi + green salad",c:"480 kcal"},{t:"4:00 PM",dot:"#22c27a",d:"Pre-workout snack",det:"Roasted chana 40g + 1 cup green tea",c:"150 kcal"},{t:"7:30 PM",dot:"#E05C8A",d:"Dinner",det:"Paneer bhurji 150g + 1 roti + stir-fried veggies",c:"480 kcal"},{t:"9:30 PM",dot:"#555",d:"Wind-down",det:"Warm turmeric milk — no sugar",c:"80 kcal"}],
+    tips:["Keep knees tracking over toes during squats","Squeeze glutes at the top of every bridge rep","Eat lunch at least 90 min before training","Stretch hip flexors 5 min after the session"]}},
+  {id:"vikas",name:"Vikas",initials:"VK",color:"#4ADE80",bg:"rgba(74,222,128,.1)",tc:"#4ADE80",goal:"Muscle gain",streak:12,
+   hype:{line:"Twelve days straight — you're in a zone most people only dream about. Today is back day. Pull heavy, grow bigger.",qt:"Your body will do what your mind tells it to. Tell it to grow. Feed it. Push it. It's listening."},
+   today:{focus:"Back & biceps",meta:"5 exercises · ~65 min · heavy",cals:3150,water:5,
+    macros:{p:{g:220,pct:100,c:"#4ADE80"},c:{g:300,pct:96,c:"#FB923C"},f:{g:80,pct:72,c:"#F5A623"}},
+    wo:[{n:"Weighted pull-ups",m:"4 × 8 reps · +10 kg belt",b:"Compound"},{n:"Barbell row",m:"4 × 8 reps · 80 kg",b:"Compound"},{n:"Seated cable row",m:"3 × 12 reps · 60 kg",b:"Width"},{n:"Barbell bicep curl",m:"4 × 10 reps · 40 kg",b:"Biceps"},{n:"Hammer curl",m:"3 × 12 reps · 16 kg each",b:"Biceps"}],
+    meals:[{t:"7:00 AM",dot:"#4ADE80",d:"Power breakfast",det:"5-egg omelette + 2 whole wheat toast + OJ 250ml",c:"600 kcal"},{t:"10:30 AM",dot:"#22c27a",d:"Mid-morning",det:"Whey 30g + 1 banana + 1 tbsp peanut butter",c:"400 kcal"},{t:"1:00 PM",dot:"#4ADE80",d:"Lunch",det:"Grilled chicken 250g + pasta 120g + mixed veggies",c:"750 kcal"},{t:"4:00 PM",dot:"#22c27a",d:"Pre-workout",det:"Mass gainer 60g + mixed nuts 30g",c:"450 kcal"},{t:"7:30 PM",dot:"#4ADE80",d:"Dinner",det:"Mutton curry 200g + brown rice 180g + salad",c:"700 kcal"},{t:"9:30 PM",dot:"#555",d:"Night shake",det:"Casein 35g + 250ml full-fat milk",c:"250 kcal"}],
+    tips:["Take creatine 5g with your morning meal today","Use straps on heavy rows — grip shouldn't be the limit","Superset hammer curls with cable rows to save time","Weigh yourself tomorrow morning: note, don't obsess"]}},
+  {id:"meera",name:"Meera",initials:"ME",color:"#FB923C",bg:"rgba(251,146,60,.1)",tc:"#FB923C",goal:"Weight loss",streak:3,
+   hype:{line:"Three days in and you're already feeling the change. Today is movement day — gentle, consistent, powerful.",qt:"You are not starting over. You are starting from experience. This version of you knows what she's capable of."},
+   today:{focus:"Active cardio & core",meta:"4 exercises · ~60 min · low–moderate",cals:1305,water:10,
+    macros:{p:{g:100,pct:46,c:"#FB923C"},c:{g:160,pct:52,c:"#F5A623"},f:{g:45,pct:40,c:"#E05C8A"}},
+    wo:[{n:"Brisk morning walk",m:"45 min · target 4,500 steps",b:"Cardio"},{n:"Plank hold",m:"3 × 30 seconds · rest 45 sec",b:"Core"},{n:"Bodyweight crunches",m:"3 × 20 reps · slow controlled",b:"Core"},{n:"Wall push-ups",m:"3 × 12 reps · stand far from wall",b:"Upper"}],
+    meals:[{t:"7:30 AM",dot:"#FB923C",d:"Breakfast",det:"2 moong dal cheela + mint-coriander chutney",c:"280 kcal"},{t:"10:30 AM",dot:"#22c27a",d:"Morning snack",det:"1 apple + 10 almonds",c:"130 kcal"},{t:"1:00 PM",dot:"#FB923C",d:"Lunch",det:"Vegetable khichdi 1 cup + salad + low-fat lassi",c:"420 kcal"},{t:"4:00 PM",dot:"#22c27a",d:"Evening snack",det:"Herbal tea + roasted makhana 30g",c:"90 kcal"},{t:"7:30 PM",dot:"#FB923C",d:"Dinner",det:"Clear soup + grilled fish 150g + sautéed veggies",c:"380 kcal"},{t:"9:00 PM",dot:"#555",d:"Before bed",det:"Warm lemon water — no food after this",c:"5 kcal"}],
+    tips:["Walk after every meal — even 10 minutes helps digestion","No screens 30 min before sleep — recovery is training too","Drink a full glass of water before every meal","You don't need to be perfect. You need to be present."]}},
+  {id:"rohan",name:"Rohan",initials:"RO",color:"#818CF8",bg:"rgba(129,140,248,.1)",tc:"#818CF8",goal:"Athletic perf.",streak:9,
+   hype:{line:"Nine days of elite commitment. Today is speed and agility. The field is your gym — you are the weapon.",qt:"Champions are made in the moments they want to quit and don't. Today is that moment."},
+   today:{focus:"Speed, agility & power",meta:"5 exercises · ~70 min · high intensity",cals:2510,water:9,
+    macros:{p:{g:180,pct:82,c:"#818CF8"},c:{g:280,pct:90,c:"#FB923C"},f:{g:70,pct:64,c:"#F5A623"}},
+    wo:[{n:"Sprint drill warm-up",m:"20 min · 4×50m build-up runs",b:"Speed"},{n:"Agility ladder",m:"6 patterns × 3 rounds · 30 sec rest",b:"Agility"},{n:"Box jumps",m:"4 × 8 reps · 50 cm box",b:"Power"},{n:"Single-leg bounds",m:"3 × 10 each leg",b:"Plyometric"},{n:"Cool-down jog + stretch",m:"10 min easy pace",b:"Recovery"}],
+    meals:[{t:"6:30 AM",dot:"#818CF8",d:"Pre-training fuel",det:"1 banana + 2 peanut butter toast + 200ml milk",c:"480 kcal"},{t:"10:00 AM",dot:"#22c27a",d:"Recovery snack",det:"Protein bar 60g + orange juice 300ml",c:"320 kcal"},{t:"1:00 PM",dot:"#818CF8",d:"Lunch",det:"Brown rice 150g + grilled chicken 200g + dal + salad",c:"680 kcal"},{t:"4:00 PM",dot:"#22c27a",d:"Afternoon fuel",det:"Whey protein 30g + 1 apple",c:"280 kcal"},{t:"7:30 PM",dot:"#818CF8",d:"Dinner",det:"Whole wheat pasta 120g + tuna 150g + olive oil + veggies",c:"600 kcal"},{t:"9:30 PM",dot:"#555",d:"Recovery shake",det:"Greek yogurt 200g + 1 tsp honey",c:"150 kcal"}],
+    tips:["Eat pre-training meal 75 min before sprint drills","Sip electrolytes during session — not plain water only","Video one sprint from the side to check your form","Sleep by 10:30 PM — HGH peaks in your first sleep cycle"]}}
+];
+
+/* ── STATE ── */
+let cur=null, done={}, wfill={};
+
+/* ── KINETIC TEXT ── */
+const kWords=["get stronger","earn it today","show up","break limits","go harder","own the day","rise up","never quit","outwork doubt","be relentless"];
+let kIdx=0;
+function cycleKinetic(){
+  const el=document.getElementById("kinetic");
+  el.classList.remove("in");el.classList.add("out");
+  setTimeout(()=>{kIdx=(kIdx+1)%kWords.length;el.textContent=kWords[kIdx];el.classList.remove("out");el.classList.add("in");},230);
+}
+setInterval(cycleKinetic,2000);
+
+/* ── SCREEN SWITCH ── */
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+/* ── LANDING → HYPE ── */
+function selClient(id){
+  cur=clients.find(c=>c.id===id);
+  if(!done[id]){done[id]={};wfill[id]=0;}
+  const c=cur;
+  const av=document.getElementById("hAv");
+  av.style.background=c.bg;av.style.color=c.tc;av.textContent=c.initials;
+  document.getElementById("hRing").style.borderColor=c.tc;
+  document.getElementById("hName").textContent=c.name;
+  document.getElementById("hStreakTxt").textContent=c.streak+" day streak 🔥";
+  document.getElementById("hLine").textContent=c.hype.line;
+  document.getElementById("hQt").textContent="\u201C"+c.hype.qt+"\u201D";
+  document.getElementById("hStats").innerHTML=`
+    <div class="hs" role="listitem"><div class="hs-v" style="color:${c.color}">${c.today.wo.length}</div><div class="hs-l">Exercises</div></div>
+    <div class="hs" role="listitem"><div class="hs-v" style="color:${c.color}">${c.today.cals}</div><div class="hs-l">Daily cals</div></div>
+    <div class="hs" role="listitem"><div class="hs-v" style="color:${c.color}">${c.today.water}</div><div class="hs-l">Glasses H₂O</div></div>
+  `;
+  show("s-hype");
+}
+
+/* ── HYPE → PLAN ── */
+function showPlan(){
+  const c=cur,id=c.id;
+  const av=document.getElementById("pAv");
+  av.style.background=c.bg;av.style.color=c.tc;av.textContent=c.initials;
+  document.getElementById("pName").textContent=c.name;
+  document.getElementById("pSub").textContent=c.goal;
+  document.getElementById("pDay").textContent=TODAY;
+  document.getElementById("pFocus").textContent=c.today.focus;
+  document.getElementById("pMeta").textContent=c.today.meta;
+  document.getElementById("progCircle").style.stroke=c.color;
+  show("s-plan");
+  renderBody(c);
+  updProg(c);
+}
+
+/* ── RENDER PLAN BODY ── */
+function renderBody(c){
+  const id=c.id,body=document.getElementById("pBody");
+  body.innerHTML="";
+  const doneCount=Object.values(done[id]).filter(Boolean).length;
+  const total=c.today.wo.length;
+
+  /* done banner */
+  if(doneCount===total&&total>0){
+    const ban=document.createElement("div");
+    ban.className="done-banner";
+    ban.innerHTML=`<i class="ti ti-trophy" aria-hidden="true"></i><div><div class="done-b-title">Workout complete!</div><div class="done-b-sub">You showed up and absolutely crushed it today. 💪</div></div>`;
+    body.appendChild(ban);
   }
-};
 
-// 🔑 GET USER FROM URL
-const params = new URLSearchParams(window.location.search);
-const userKey = params.get("user");
+  /* stats row */
+  appendHTML(body,`<div>
+    <div class="sum-row">
+      <div class="scard"><div class="scard-v" style="color:${c.color}">${c.today.wo.length}</div><div class="scard-l">Exercises</div></div>
+      <div class="scard"><div class="scard-v" style="color:${c.color}">${c.today.cals}</div><div class="scard-l">Target cals</div></div>
+      <div class="scard"><div class="scard-v" style="color:${c.color}">${c.streak}</div><div class="scard-l">Day streak</div></div>
+    </div>
+  </div>`);
 
-// DEFAULT USER
-const user = plans[userKey] || plans["aditya"];
+  /* workout */
+  const wSec=document.createElement("div");
+  wSec.innerHTML=`<div class="sec-head"><i class="ti ti-barbell" style="color:${c.color}" aria-hidden="true"></i>Workout — tap each to mark done</div>`;
+  const tl=document.createElement("div");tl.className="task-list";tl.setAttribute("role","list");
+  c.today.wo.forEach((t,i)=>{
+    const item=document.createElement("div");
+    item.className="titem"+(done[id][i]?" done":"");
+    item.setAttribute("role","checkbox");item.setAttribute("aria-checked",done[id][i]?"true":"false");item.setAttribute("tabindex","0");
+    item.innerHTML=`<div class="tchk"><i class="ti ti-check" aria-hidden="true"></i></div><div class="tinfo"><div class="tname">${t.n}</div><div class="tmeta">${t.m}</div></div><div class="tbadge">${t.b}</div>`;
+    item.addEventListener("click",()=>{
+      done[id][i]=!done[id][i];
+      item.classList.toggle("done");
+      item.setAttribute("aria-checked",done[id][i]?"true":"false");
+      updProg(c);
+      const nowDone=Object.values(done[id]).filter(Boolean).length;
+      if(nowDone===c.today.wo.length)renderBody(c);
+    });
+    item.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();item.click();}});
+    tl.appendChild(item);
+  });
+  wSec.appendChild(tl);body.appendChild(wSec);
 
-// LOAD DATA
-document.getElementById("userName").innerText = user.name;
-document.getElementById("workout").innerText = user.workout;
-document.getElementById("diet").innerText = user.diet;
-document.getElementById("tasks").innerText = user.tasks;
+  /* macros */
+  const mMac=document.createElement("div");
+  const mac=c.today.macros;
+  mMac.innerHTML=`<div class="sec-head"><i class="ti ti-chart-bar" style="color:${c.color}" aria-hidden="true"></i>Daily macros</div>
+    <div class="macro-bar-wrap">
+      <div class="macro-row"><span class="macro-lbl">Protein</span><div class="macro-track"><div class="macro-fill" style="width:${mac.p.pct}%;background:${mac.p.c}"></div></div><span class="macro-val" style="color:${mac.p.c}">${mac.p.g}g</span></div>
+      <div class="macro-row"><span class="macro-lbl">Carbs</span><div class="macro-track"><div class="macro-fill" style="width:${mac.c.pct}%;background:${mac.c.c}"></div></div><span class="macro-val" style="color:${mac.c.c}">${mac.c.g}g</span></div>
+      <div class="macro-row"><span class="macro-lbl">Fats</span><div class="macro-track"><div class="macro-fill" style="width:${mac.f.pct}%;background:${mac.f.c}"></div></div><span class="macro-val" style="color:${mac.f.c}">${mac.f.g}g</span></div>
+    </div>`;
+  body.appendChild(mMac);
 
-// ACTIONS
-function markDone() {
-  showStatus("✅ Completed. Keep going.");
+  /* meals */
+  const mSec=document.createElement("div");
+  mSec.innerHTML=`<div class="sec-head"><i class="ti ti-salad" style="color:#22c27a" aria-hidden="true"></i>Meals for today</div>`;
+  const mc=document.createElement("div");mc.className="meal-card";
+  c.today.meals.forEach(m=>{
+    const r=document.createElement("div");r.className="mitem";
+    r.innerHTML=`<div class="mtime">${m.t}</div><div class="mdot" style="background:${m.dot}"></div><div class="mtxt"><div class="mdesc">${m.d}</div><div class="mdet">${m.det}</div></div><div class="mcal">${m.c}</div>`;
+    mc.appendChild(r);
+  });
+  mSec.appendChild(mc);body.appendChild(mSec);
+
+  /* water */
+  const wtrSec=document.createElement("div");
+  wtrSec.innerHTML=`<div class="sec-head"><i class="ti ti-droplet" style="color:#378ADD" aria-hidden="true"></i>Water tracker — ${c.today.water} glasses today</div>`;
+  const cups=document.createElement("div");cups.className="water-row";cups.setAttribute("role","group");cups.setAttribute("aria-label","Water glasses");
+  for(let i=0;i<c.today.water;i++){
+    const cup=document.createElement("div");
+    cup.className="wcup"+(wfill[id]>i?" fill":"");
+    cup.setAttribute("role","checkbox");cup.setAttribute("aria-label","Glass "+(i+1));cup.setAttribute("tabindex","0");
+    cup.innerHTML=`<i class="ti ti-glass-full" aria-hidden="true"></i>`;
+    cup.addEventListener("click",()=>{wfill[id]=wfill[id]>i?i:i+1;renderBody(c);updProg(c);});
+    cup.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();cup.click();}});
+    cups.appendChild(cup);
+  }
+  const wl=document.createElement("div");wl.className="wlbl";wl.textContent=wfill[id]+" of "+c.today.water+" glasses done";
+  wtrSec.appendChild(cups);wtrSec.appendChild(wl);body.appendChild(wtrSec);
+
+  /* tips */
+  const tSec=document.createElement("div");
+  tSec.innerHTML=`<div class="sec-head"><i class="ti ti-bulb" style="color:${c.color}" aria-hidden="true"></i>Coach tips for today</div>`;
+  const tl2=document.createElement("div");tl2.className="tips-list";
+  c.today.tips.forEach((tip,i)=>{
+    const item=document.createElement("div");item.className="tip-item";
+    item.innerHTML=`<div class="tip-num">${i+1}</div><div class="tip-txt">${tip}</div>`;
+    tl2.appendChild(item);
+  });
+  tSec.appendChild(tl2);body.appendChild(tSec);
+
+  /* bottom space */
+  appendHTML(body,`<div style="height:1.5rem"></div>`);
 }
 
-function markSkip() {
-  const reason = prompt("Why did you skip?");
-  showStatus("⚠️ Skipped: " + reason);
+function updProg(c){
+  const id=c.id,total=c.today.wo.length;
+  const d=Object.values(done[id]).filter(Boolean).length;
+  const pct=Math.round(d/total*100);
+  const circ=163.36;
+  document.getElementById("progCircle").style.strokeDashoffset=circ-(circ*pct/100);
+  document.getElementById("pPct").textContent=pct+"%";
+  document.getElementById("pProgL").textContent=d+" of "+total+" done";
+  const pr=document.getElementById("pProgR");
+  if(pct===100){pr.textContent="Complete! 🏆";pr.classList.add("done");}
+  else if(pct>50){pr.textContent="Almost there";pr.classList.remove("done");}
+  else{pr.textContent="Keep going";pr.classList.remove("done");}
 }
 
-function showStatus(msg) {
-  const box = document.getElementById("statusBox");
-  box.innerText = msg;
-  box.classList.remove("hidden");
-}
+function appendHTML(parent,html){const d=document.createElement("div");d.innerHTML=html;parent.appendChild(d);}
 
+/* ── BUILD CLIENT BUTTONS ── */
+(function(){
+  const g=document.getElementById("cGrid");
+  clients.forEach(c=>{
+    const btn=document.createElement("div");
+    btn.className="cbtn";btn.setAttribute("role","listitem");btn.setAttribute("tabindex","0");btn.setAttribute("aria-label","Select "+c.name+", goal: "+c.goal);
+    btn.innerHTML=`<div class="c-av" style="background:${c.bg};color:${c.tc}">${c.initials}</div><div class="c-nm">${c.name}</div><div class="c-goal">${c.goal}</div>`;
+    btn.addEventListener("click",()=>selClient(c.id));
+    btn.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();selClient(c.id);}});
+    g.appendChild(btn);
+  });
+})();
+
+/* ── WIRE UP BUTTONS ── */
+document.getElementById("hCta").addEventListener("click",showPlan);
+document.getElementById("hBack").addEventListener("click",()=>show("s-land"));
+document.getElementById("pBack").addEventListener("click",()=>show("s-hype"));
+document.getElementById("pBack").addEventListener("keydown",e=>{if(e.key==="Enter")show("s-hype");});
 </script>
-
 </body>
 </html>
